@@ -97,13 +97,13 @@ Students collaborate, think strategically, and celebrate success — all while e
 
 ## 🛠️ Getting Started
 
-```bash
+```
 git clone https://github.com/<your-username>/GroupCards-Frontend.git
 cd GroupCards-Frontend
 npm install
 npm run dev
-Then open http://localhost:5173 in your browser.```
-```bash
+Then open http://localhost:5173 in your browser.
+```
 
 📅 Development Roadmap
 
