@@ -98,14 +98,16 @@ Students collaborate, think strategically, and celebrate success — all while e
 ## 🛠️ Getting Started
 
 ```
-git clone https://github.com/<your-username>/GroupCards-Frontend.git
+git clone https://github.com/TamarBollak0077/EduQuest-Frontend
 cd GroupCards-Frontend
 npm install
 npm run dev
-Then open http://localhost:5173 in your browser.
 ```
+Then open http://localhost:5173 in your browser.
 
-📅 Development Roadmap
+---
+
+## 📅 Development Roadmap
 
  Base structure and layout
  Game board and card grid
@@ -114,16 +116,18 @@ Then open http://localhost:5173 in your browser.
  Scoreboard and winner display
  UI polish and animations
 
-👩‍💻 Developer
+---
+
+## 👩‍💻 Developer
 
 Developed by Tamar Bolak
 
 Full Stack Developer | Educational Software Projects
-📧 tamar@example.com
- | 💼 LinkedIn
- | 🌐 Portfolio
+📧 t0583230077.com
 
-🪪 License
+---
+
+## 🪪 License
 
 This project is proprietary and currently being developed for a private educational client.
 All rights reserved © 2025.
