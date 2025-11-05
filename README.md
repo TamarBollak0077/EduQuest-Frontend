@@ -1,46 +1,128 @@
-# Getting Started with Create React App
+# EduQuest-Frontend
+Frontend for an educational competition platform — designed for interactive classroom teamwork and territory challenges.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1 align="center">🎓 GroupCards | Educational Team Game</h1>
 
-## Available Scripts
+<p align="center">
+  <b>Interactive web-based card game for classroom teamwork and competition</b>  
+  <br/>
+  <i>Frontend MVP developed with React + TypeScript + Tailwind CSS</i>
+</p>
 
-In the project directory, you can run:
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🧩 Overview
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+**GroupCards** is an interactive educational card game designed for **elementary school students**.  
+Three teams compete to **color as many cards as possible** by completing real-world challenges and making smart choices.  
+The team with the most colored cards wins!
 
-### `npm test`
+> 🧱 This repository includes the **Frontend MVP**, built as part of a paid educational project for a school client.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🃏 Game Flow
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. The main screen displays a **grid of 30 cards**.  
+2. A **colored dice** randomly selects which team plays next (3 colors = 3 teams).  
+3. The selected team chooses a card; the game operator clicks it.  
+4. Each card type triggers a different outcome:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| 🪄 Card Type | 🧠 Description | 🏁 Result |
+|--------------|----------------|-----------|
+| **Task Card** | “You got a mission!” – external challenge | If successful → card turns team color |
+| **Bonus Card** | “You earned another turn!” | Card turns color + team continues |
+| **Loss Card** | “You lost your turn!” | No color change, turn ends |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. When all cards are colored → the system announces the **winning team**.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## ⚙️ Tech Stack
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Stack | Usage |
+|--------|--------|
+| ⚛️ **React + TypeScript** | Component-based frontend architecture |
+| 🎨 **Tailwind CSS** | Fast and responsive UI styling |
+| 🧠 **Redux Toolkit** *(optional)* | State management for teams and game flow |
+| ⚙️ **Vite** | Build and dev environment |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 🚧 Project Status
 
-## Learn More
+> 🚀 **Currently in Active Development (MVP Phase)**  
+> Includes layout, logic, and modals — backend, persistence, and animations will follow later.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📂 Project Structure
+
+src/
+├── components/ # Card, Dice, Modal, Scoreboard
+├── pages/ # Game screen and layout
+├── store/ # State management (turns, colors, score)
+├── utils/ # Helpers and random functions
+└── assets/ # Static files (icons, images)
+
+
+---
+
+## 🧠 Educational Purpose
+
+The goal of **GroupCards** is to blend **teamwork, learning, and fun**.  
+Students collaborate, think strategically, and celebrate success — all while engaging in meaningful classroom challenges.
+
+---
+
+## 🌟 Planned Upgrades
+
+| Feature | Description |
+|----------|--------------|
+| ✨ **Card animations** | Flip, color transitions, hover effects |
+| 💾 **Backend integration** | Save scores and match history |
+| 🔊 **Sound & feedback** | Audio effects for events |
+| 🎨 **Custom school theme** | Adapt branding and color palette |
+| 🏆 **Results screen** | Summary and statistics for each match |
+
+---
+
+## 🛠️ Getting Started
+
+```
+git clone https://github.com/TamarBollak0077/EduQuest-Frontend
+cd GroupCards-Frontend
+npm install
+npm run dev
+```
+Then open http://localhost:5173 in your browser.
+
+---
+
+## 📅 Development Roadmap
+
+ Base structure and layout
+ Game board and card grid
+ Dice logic and turn system
+ Card interactions (task, bonus, loss)
+ Scoreboard and winner display
+ UI polish and animations
+
+---
+
+## 👩‍💻 Developer
+
+Developed by Tamar Bolak
+
+Full Stack Developer | Educational Software Projects
+📧 t0583230077.com
+
+---
+
+## 🪪 License
+
+This project is proprietary and currently being developed for a private educational client.
+All rights reserved © 2025.
+
+---
