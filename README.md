@@ -9,13 +9,11 @@ Frontend for an educational competition platform — designed for interactive cl
   <i>Frontend MVP developed with React + TypeScript + Tailwind CSS</i>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/status-in_development-yellow?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/frontend-react-blue?style=for-the-badge&logo=react" />
-  <img src="https://img.shields.io/badge/language-typescript-007ACC?style=for-the-badge&logo=typescript" />
-  <img src="https://img.shields.io/badge/style-tailwindcss-38BDF8?style=for-the-badge&logo=tailwindcss" />
-  <img src="https://img.shields.io/badge/build-vite-646CFF?style=for-the-badge&logo=vite" />
-</p>
+![Status](https://img.shields.io/badge/status-in_development-yellow?style=for-the-badge)
+![Frontend](https://img.shields.io/badge/frontend-react-blue?style=for-the-badge&logo=react)
+![Language](https://img.shields.io/badge/language-typescript-007ACC?style=for-the-badge&logo=typescript)
+![Style](https://img.shields.io/badge/style-tailwindcss-38BDF8?style=for-the-badge&logo=tailwindcss)
+![Build](https://img.shields.io/badge/build-vite-646CFF?style=for-the-badge&logo=vite)
 
 
 ---
