@@ -1,221 +1,8 @@
-// import React, { useState } from "react";
-// import Modal from "./Modal";
-
-// type CardType = "task" | "extra" | "lose";
-// type TeamColor = "red" | "blue" | "green" | "";
-
-// interface Card {
-//   id: number;
-//   type: CardType;
-//   color: TeamColor;
-//   revealed: boolean;
-// }
-
-// const generateCards = (): Card[] => {
-//   const types: CardType[] = ["task", "extra", "lose"];
-//   const cards: Card[] = [];
-//   for (let i = 0; i < 30; i++) {
-//     const type = types[Math.floor(Math.random() * types.length)];
-//     cards.push({ id: i, type, color: "", revealed: false });
-//   }
-//   return cards;
-// };
-
-// const teams: TeamColor[] = ["red", "blue", "green"];
-
-// function App() {
-//   const [cards, setCards] = useState<Card[]>(generateCards());
-//   const [currentTeam, setCurrentTeam] = useState<TeamColor>("");
-//   const [modalMessage, setModalMessage] = useState<string>("");
-//   const [modalOptions, setModalOptions] = useState<boolean>(false);
-//   const [pendingCard, setPendingCard] = useState<Card | null>(null);
-//   const [diceRolling, setDiceRolling] = useState<boolean>(false);
-
-//   // פונקציה לנגינת צליל
-//   const playSound = (type: "dice" | "click" | "success") => {
-//     const audio = new Audio(`/sounds/${type}.mp3`);
-//     audio.play();
-//   };
-
-//   // קוביית צבעים מונפשת
-//   const rollDiceAnimated = () => {
-//     setDiceRolling(true);
-//     const colors: TeamColor[] = ["red", "blue", "green"];
-//     let index = 0;
-//     const interval = setInterval(() => {
-//       setCurrentTeam(colors[index]);
-//       index = (index + 1) % colors.length;
-//     }, 100);
-
-//     setTimeout(() => {
-//       clearInterval(interval);
-//       const chosen = colors[Math.floor(Math.random() * colors.length)];
-//       setCurrentTeam(chosen);
-//       setModalMessage(`תור של הקבוצה: ${chosen.toUpperCase()}`);
-//       setDiceRolling(false);
-//       playSound("dice");
-//     }, 1200);
-//   };
-
-//   const handleCardClick = (card: Card) => {
-//     if (!currentTeam) {
-//       setModalMessage("הגרילו קובייה תחילה!");
-//       return;
-//     }
-//     if (card.color) {
-//       setModalMessage("קלף כבר נצבע!");
-//       return;
-//     }
-
-//     // חשיפת סוג הקלף
-//     if (!card.revealed) {
-//       const newCards = cards.map((c) =>
-//         c.id === card.id ? { ...c, revealed: true } : c
-//       );
-//       setCards(newCards);
-//     }
-
-//     playSound("click");
-
-//     if (card.type === "task") {
-//       setModalMessage("קיבלתם משימה!");
-//       setModalOptions(true);
-//       setPendingCard(card);
-//     } else {
-//       let message = card.type === "extra" ? "זכיתם בבחירה נוספת!" : "הפסדתם תור!";
-//       setModalMessage(message);
-//       if (card.type !== "lose") {
-//         paintCard(card);
-//         playSound("success");
-//       } else {
-//         setCurrentTeam("");
-//       }
-//     }
-//   };
-
-//   const paintCard = (card: Card) => {
-//     const newCards = cards.map((c) =>
-//       c.id === card.id ? { ...c, color: currentTeam } : c
-//     );
-//     setCards(newCards);
-//     playSound("success");
-//   };
-
-//   const handleTaskSuccess = () => {
-//     if (pendingCard) paintCard(pendingCard);
-//     setModalOptions(false);
-//     setPendingCard(null);
-//     setCurrentTeam("");
-//   };
-
-//   const handleTaskFail = () => {
-//     setModalOptions(false);
-//     setPendingCard(null);
-//     setCurrentTeam("");
-//   };
-
-//   const countCards = (color: TeamColor) =>
-//     cards.filter((c) => c.color === color).length;
-
-//   const remainingPaintableCards = cards.filter(
-//     (c) => c.type !== "lose" && !c.color
-//   );
-
-//   const getWinner = () => {
-//     const counts = teams.map((t) => ({ team: t, score: countCards(t) }));
-//     counts.sort((a, b) => b.score - a.score);
-//     return counts[0].score > 0 ? counts[0].team : "";
-//   };
-
-//   return (
-//     <div className="p-6 bg-gray-100 min-h-screen">
-//       <h1 className="text-4xl font-bold text-center mb-6">משחק רמת שלמה</h1>
-
-//       {/* קוביית צבעים מונפשת */}
-//       <div className="flex justify-center mb-4">
-//         <button
-//           onClick={rollDiceAnimated}
-//           disabled={diceRolling}
-//           className={`bg-green-500 text-white px-6 py-3 rounded shadow hover:bg-green-600 transition ${
-//             diceRolling ? "opacity-50 cursor-not-allowed" : ""
-//           }`}
-//         >
-//           להגריל קובייה
-//         </button>
-//       </div>
-
-//       <p className="text-center mb-4 text-lg">
-//         קבוצה נוכחית:{" "}
-//         <span
-//           className={`font-bold ${
-//             currentTeam === "red"
-//               ? "text-red-600"
-//               : currentTeam === "blue"
-//               ? "text-blue-600"
-//               : currentTeam === "green"
-//               ? "text-green-600"
-//               : ""
-//           }`}
-//         >
-//           {currentTeam.toUpperCase()}
-//         </span>
-//       </p>
-
-//       {/* גריד קלפים */}
-//       <div className="grid grid-cols-6 gap-4">
-//         {cards.map((card) => (
-//           <div
-//             key={card.id}
-//             onClick={() => handleCardClick(card)}
-//             className={`h-36 flex items-center justify-center border-2 rounded-lg cursor-pointer shadow-lg transition transform hover:scale-105
-//               ${card.color ? `bg-${card.color}-400 card-animated` : "bg-gray-300"}
-//             `}
-//           >
-//             {card.revealed && (
-//               <span className="font-bold text-white text-lg">
-//                 {card.type.toUpperCase()}
-//               </span>
-//             )}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* ניקוד */}
-//       <div className="mt-6 text-center">
-//         <h2 className="text-xl font-semibold mb-2">ניקוד</h2>
-//         <p className="mb-1 text-red-600">אדום: {countCards("red")}</p>
-//         <p className="mb-1 text-blue-600">כחול: {countCards("blue")}</p>
-//         <p className="mb-1 text-green-600">ירוק: {countCards("green")}</p>
-//       </div>
-
-//       {/* הודעת ניצחון */}
-//       {remainingPaintableCards.length === 0 && (
-//         <h2 className="mt-6 text-3xl font-extrabold text-center text-purple-700 animate-pulse">
-//           המשחק הסתיים! מנצחת הקבוצה: {getWinner().toUpperCase()}
-//         </h2>
-//       )}
-
-//       {/* Modal */}
-//       {modalMessage && (
-//         <Modal
-//           message={modalMessage}
-//           showOptions={modalOptions}
-//           onClose={() => setModalMessage("")}
-//           onSuccess={handleTaskSuccess}
-//           onFail={handleTaskFail}
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-// export default App;
-
-import React, { useState } from "react";
-import ModalSVG from "./ModalSVG";
+import React, { useState, useEffect } from "react";
+import Modal from "./Modal";
 
 type CardType = "task" | "extra" | "lose";
-type TeamColor = "red" | "blue" | "green" | "";
+type TeamColor = "pink" | "orange" | "purple" | "";
 
 interface Card {
   id: number;
@@ -224,25 +11,50 @@ interface Card {
   revealed: boolean;
 }
 
-const generateCards = (): Card[] => {
-  const types: CardType[] = ["task", "extra", "lose"];
-  const cards: Card[] = [];
-  for (let i = 0; i < 30; i++) {
-    const type = types[Math.floor(Math.random() * types.length)];
-    cards.push({ id: i, type, color: "", revealed: false });
-  }
-  return cards;
+const colorClasses: Record<TeamColor, string> = {
+  pink: "bg-pink-400",
+  orange: "bg-orange-400",
+  purple: "bg-purple-400",
+  "": "bg-gray-300"
 };
 
-const teams: TeamColor[] = ["red", "blue", "green"];
+const teams: TeamColor[] = ["pink", "orange", "purple"];
+
+const generateCards = (): Card[] => {
+  const totalCards = 30;
+  const maxLose = Math.floor(totalCards * 0.25); // עד 25%
+  let loseCount = 0;
+  const cards: Card[] = [];
+
+  for (let i = 0; i < totalCards; i++) {
+    let type: CardType;
+    const rand = Math.random();
+    if (rand < 0.25 && loseCount < maxLose) {
+      type = "lose";
+      loseCount++;
+    } else {
+      type = rand < 0.625 ? "task" : "extra";
+    }
+    cards.push({ id: i, type, color: "", revealed: false });
+  }
+
+  // ערבוב קלפים
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+
+  return cards;
+};
 
 function App() {
   const [cards, setCards] = useState<Card[]>(generateCards());
   const [currentTeam, setCurrentTeam] = useState<TeamColor>("");
-  const [pendingCard, setPendingCard] = useState<Card | null>(null);
-  const [modalMessage, setModalMessage] = useState<string>("");
-  const [modalOptions, setModalOptions] = useState<boolean>(false);
   const [diceRolling, setDiceRolling] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [bonusActive, setBonusActive] = useState<boolean>(false);
+  const [bonusCardId, setBonusCardId] = useState<number | null>(null);
+  const [turnQueue, setTurnQueue] = useState<TeamColor[]>([]);
 
   const playSound = (type: "dice" | "click" | "success") => {
     const audio = new Audio(`/sounds/${type}.mp3`);
@@ -251,188 +63,154 @@ function App() {
 
   const rollDiceAnimated = () => {
     setDiceRolling(true);
-    const colors: TeamColor[] = ["red", "blue", "green"];
+    let queue = [...turnQueue];
+    if (queue.length === 0) {
+      queue = [...teams].sort(() => Math.random() - 0.5);
+      setTurnQueue(queue);
+    }
+
     let index = 0;
     const interval = setInterval(() => {
-      setCurrentTeam(colors[index]);
-      index = (index + 1) % colors.length;
+      setCurrentTeam(queue[index]);
+      index = (index + 1) % queue.length;
     }, 100);
 
     setTimeout(() => {
       clearInterval(interval);
-      const chosen = colors[Math.floor(Math.random() * colors.length)];
+      const chosen = queue.shift()!;
       setCurrentTeam(chosen);
-      setModalMessage(`תור של הקבוצה: ${chosen.toUpperCase()}`);
+      setTurnQueue(queue);
       setDiceRolling(false);
       playSound("dice");
     }, 1200);
   };
 
-  const handleCardClick = (card: Card) => {
-    if (!currentTeam) {
-      setModalMessage("הגרילו קובייה תחילה!");
-      return;
-    }
-    if (card.color) {
-      setModalMessage("קלף כבר נצבע!");
-      return;
-    }
-
-    if (!card.revealed) {
-      const newCards = cards.map((c) =>
-        c.id === card.id ? { ...c, revealed: true } : c
-      );
-      setCards(newCards);
-    }
-
-    playSound("click");
-
-    if (card.type === "task") {
-      setModalMessage("קיבלתם משימה!");
-      setModalOptions(true);
-      setPendingCard(card);
-    } else {
-      let message = card.type === "extra" ? "זכיתם בבחירה נוספת!" : "הפסדתם תור!";
-      setModalMessage(message);
-      if (card.type !== "lose") {
-        paintCard(card);
-        playSound("success");
+  const paintCard = (card: Card, isBonusSecondClick: boolean = false) => {
+    setCards(cards.map(c => {
+      if (c.id !== card.id) return c;
+      if (card.type === "lose" && !isBonusSecondClick) {
+        // קלף הפסד רגיל: לא צבע, רק revealed
+        return { ...c, revealed: true };
       } else {
-        setCurrentTeam("");
+        // כל שאר המקרים: צובע
+        return { ...c, color: currentTeam, revealed: true };
       }
-      setPendingCard(card);
-      setModalOptions(false);
-    }
-  };
-
-  const paintCard = (card: Card) => {
-    const newCards = cards.map((c) =>
-      c.id === card.id ? { ...c, color: currentTeam } : c
-    );
-    setCards(newCards);
+    }));
     playSound("success");
   };
 
-  const handleTaskSuccess = () => {
-    if (pendingCard) paintCard(pendingCard);
-    setPendingCard(null);
-    setModalOptions(false);
-    setCurrentTeam("");
-    setModalMessage("");
+  const handleCardClick = (card: Card) => {
+    if (!currentTeam || card.revealed) return;
+
+    playSound("click");
+
+    const isBonusSecondClick = bonusActive && card.id !== bonusCardId;
+
+    if (isBonusSecondClick) {
+      paintCard(card, true); // צובע בלי פופ-אפ, לא משנה סוגו
+      setBonusActive(false);
+      setBonusCardId(null);
+      setCurrentTeam("");
+      return;
+    }
+
+    switch (card.type) {
+      case "lose":
+        paintCard(card); // revealed, לא צבע
+        setModalMessage("קלף הפסד – הפסדתם תור!");
+        setCurrentTeam("");
+        break;
+      case "task":
+        paintCard(card);
+        setModalMessage("קיבלתם משימה!");
+        setCurrentTeam("");
+        break;
+      case "extra":
+        paintCard(card);
+        setModalMessage("בונוס! בחרו קלף נוסף");
+        setBonusActive(true);
+        setBonusCardId(card.id);
+        break;
+    }
   };
 
-  const handleTaskFail = () => {
-    setPendingCard(null);
-    setModalOptions(false);
-    setCurrentTeam("");
-    setModalMessage("");
-  };
-
-  const countCards = (color: TeamColor) =>
-    cards.filter((c) => c.color === color).length;
-
-  const remainingPaintableCards = cards.filter(
-    (c) => c.type !== "lose" && !c.color
-  );
-
+  const countCards = (color: TeamColor) => cards.filter(c => c.color === color).length;
   const getWinner = () => {
-    const counts = teams.map((t) => ({ team: t, score: countCards(t) }));
+    const counts = teams.map(t => ({ team: t, score: countCards(t) }));
     counts.sort((a, b) => b.score - a.score);
     return counts[0].score > 0 ? counts[0].team : "";
   };
 
+  useEffect(() => {
+    const allClicked = cards.every(c => c.revealed || c.type === "lose");
+    if (allClicked && cards.length > 0) {
+      setModalMessage(`המשחק הסתיים! מנצחת הקבוצה: ${getWinner().toUpperCase()}`);
+      setCurrentTeam("");
+      setBonusActive(false);
+      setBonusCardId(null);
+    }
+  }, [cards]);
+
   return (
-    <div
-      className="p-6 min-h-screen bg-no-repeat bg-cover relative"
-      style={{ backgroundImage: "url(/assets/background.svg)" }}
-    >
-      {/* overlay קל למראה טוב */}
-      {/* <div className="absolute inset-0 bg-black bg-opacity-20 z-0"></div> */}
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-4xl font-bold text-center mb-6">משחק רמת שלמה</h1>
 
-      <div className="relative z-10">
-        <h1 className="text-4xl font-bold text-center mb-6 text-black">
-          משחק רמת שלמה
-        </h1>
+      {/* קוביית צבעים */}
+      <div className="flex justify-center mb-4">
+        <button
+          onClick={rollDiceAnimated}
+          disabled={diceRolling}
+          className={`bg-gradient-to-r from-pink-400 via-orange-400 to-purple-400 text-white px-6 py-3 rounded shadow hover:scale-105 transition ${diceRolling ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          להגריל קובייה
+        </button>
+      </div>
 
-        {/* קוביית צבעים */}
-        <div className="flex justify-center mb-4">
-          <button
-            onClick={rollDiceAnimated}
-            disabled={diceRolling}
-            className={`bg-green-500 text-white px-6 py-3 rounded shadow hover:bg-green-600 transition ${
-              diceRolling ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            להגריל קובייה
-          </button>
-        </div>
+      <p className="text-center mb-4 text-lg">
+        קבוצה נוכחית:{" "}
+        <span className={`font-bold ${currentTeam === "pink" ? "text-pink-600" : currentTeam === "orange" ? "text-orange-600" : currentTeam === "purple" ? "text-purple-600" : ""}`}>
+          {currentTeam.toUpperCase()}
+        </span>
+      </p>
 
-        <p className="text-center mb-4 text-lg text-black">
-          קבוצה נוכחית:{" "}
-          <span
-            className={`font-bold ${
-              currentTeam === "red"
-                ? "text-red-600"
-                : currentTeam === "blue"
-                ? "text-blue-600"
-                : currentTeam === "green"
-                ? "text-green-600"
-                : ""
-            }`}
-          >
-            {currentTeam.toUpperCase()}
-          </span>
-        </p>
+      {/* גריד קלפים */}
+      <div className="grid grid-cols-6 gap-4">
+        {cards.map(card => {
+          const isBonusCard = bonusCardId === card.id;
+          const isBonusSecondClick = bonusActive && card.revealed && card.color !== "";
 
-        {/* גריד קלפים */}
-        <div className="grid grid-cols-6 gap-4">
-          {cards.map((card) => (
+          let cardAnim = "";
+          if (isBonusCard) cardAnim = "animate-pulse animate-bounce rotate-3 border-yellow-400";
+          else if (card.type === "task" && card.revealed) cardAnim = "animate-pulse scale-105";
+          else if (card.type === "lose" && card.revealed) cardAnim = "animate-shake";
+
+          return (
             <div
               key={card.id}
               onClick={() => handleCardClick(card)}
-              className={`h-36 flex items-center justify-center border-2 rounded-lg cursor-pointer shadow-lg transition transform hover:scale-105
-              ${card.color ? `bg-${card.color}-400 card-animated` : "bg-gray-300"}
-            `}
+              className={`h-36 flex items-center justify-center border-2 rounded-lg cursor-pointer shadow-lg transition-transform duration-200 transform hover:scale-105 hover:shadow-xl ${colorClasses[card.color]} ${cardAnim}`}
             >
-              {card.revealed && (
-                <span className="font-bold text-white text-lg">
-                  {card.type.toUpperCase()}
-                </span>
+              {/* קלף הפסד רגיל */}
+              {card.revealed && card.type === "lose" && !isBonusSecondClick && (
+                <span className="font-bold text-white text-lg">קלף הפסד</span>
               )}
             </div>
-          ))}
-        </div>
-
-        {/* ניקוד */}
-        <div className="mt-6 text-center text-white">
-          <h2 className="text-xl font-semibold mb-2">ניקוד</h2>
-          <p className="mb-1 text-red-600">אדום: {countCards("red")}</p>
-          <p className="mb-1 text-blue-600">כחול: {countCards("blue")}</p>
-          <p className="mb-1 text-green-600">ירוק: {countCards("green")}</p>
-        </div>
-
-        {/* הודעת ניצחון */}
-        {remainingPaintableCards.length === 0 && (
-          <h2 className="mt-6 text-3xl font-extrabold text-center text-black-700 animate-pulse">
-            המשחק הסתיים! מנצחת הקבוצה: {getWinner().toUpperCase()}
-          </h2>
-        )}
-
-        {/* ModalSVG */}
-        {pendingCard && (
-          <ModalSVG
-            svgPath={`/assets/${pendingCard.type}.svg`}
-            onClose={handleTaskFail}
-            onSuccess={handleTaskSuccess}
-            onFail={handleTaskFail}
-            showOptions={modalOptions}
-          />
-        )}
+          );
+        })}
       </div>
+
+      {/* ניקוד */}
+      <div className="mt-6 text-center">
+        <h2 className="text-xl font-semibold mb-2">ניקוד</h2>
+        <p className="mb-1 text-pink-600">ורוד: {countCards("pink")}</p>
+        <p className="mb-1 text-orange-600">כתום: {countCards("orange")}</p>
+        <p className="mb-1 text-purple-600">סגול: {countCards("purple")}</p>
+      </div>
+
+      {/* Modal */}
+      {modalMessage && <Modal message={modalMessage} onClose={() => setModalMessage("")} />}
     </div>
   );
 }
 
 export default App;
-
-
