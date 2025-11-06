@@ -56,12 +56,13 @@ function App() {
   const [bonusCardId, setBonusCardId] = useState<number | null>(null);
   const [turnQueue, setTurnQueue] = useState<TeamColor[]>([]);
 
-  const playSound = (type: "dice" | "click" | "success") => {
+  const playSound = (type: "diceRoll" | "lose" | "bonus" | "task" | "finishGame" | "click") => {
     const audio = new Audio(`/sounds/${type}.mp3`);
     audio.play();
   };
 
   const rollDiceAnimated = () => {
+    playSound("diceRoll");
     setDiceRolling(true);
     let queue = [...turnQueue];
     if (queue.length === 0) {
@@ -81,7 +82,7 @@ function App() {
       setCurrentTeam(chosen);
       setTurnQueue(queue);
       setDiceRolling(false);
-      playSound("dice");
+      playSound("diceRoll");
     }, 1200);
   };
 
@@ -96,17 +97,15 @@ function App() {
         return { ...c, color: currentTeam, revealed: true };
       }
     }));
-    playSound("success");
   };
 
   const handleCardClick = (card: Card) => {
     if (!currentTeam || card.revealed) return;
 
-    playSound("click");
-
     const isBonusSecondClick = bonusActive && card.id !== bonusCardId;
 
     if (isBonusSecondClick) {
+      playSound("click");
       paintCard(card, true); // צובע בלי פופ-אפ, לא משנה סוגו
       setBonusActive(false);
       setBonusCardId(null);
@@ -116,16 +115,19 @@ function App() {
 
     switch (card.type) {
       case "lose":
+        playSound("lose");
         paintCard(card); // revealed, לא צבע
         setModalMessage("קלף הפסד – הפסדתם תור!");
         setCurrentTeam("");
         break;
       case "task":
+        playSound("task");
         paintCard(card);
         setModalMessage("קיבלתם משימה!");
         setCurrentTeam("");
         break;
       case "extra":
+        playSound("bonus");
         paintCard(card);
         setModalMessage("בונוס! בחרו קלף נוסף");
         setBonusActive(true);
@@ -142,8 +144,9 @@ function App() {
   };
 
   useEffect(() => {
-    const allClicked = cards.every(c => c.revealed || c.type === "lose");
+    const allClicked = cards.every(c => c.revealed);
     if (allClicked && cards.length > 0) {
+      playSound("finishGame");
       setModalMessage(`המשחק הסתיים! מנצחת הקבוצה: ${getWinner().toUpperCase()}`);
       setCurrentTeam("");
       setBonusActive(false);
