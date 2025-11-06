@@ -151,6 +151,34 @@ function App() {
     }
   }, [cards]);
 
+  // פונקציה לקביעת אנימציות לכל קלף לפי סוגו ומצבו
+  const getCardAnimation = (
+    card: Card,
+    isBonusCard: boolean,
+    isBonusSecondClick: boolean,
+    gameFinished: boolean
+  ) => {
+    if (gameFinished) {
+      const delay = (Math.random() * 0.5).toFixed(2); // delay אקראי 0–0.5s
+      return `animate-bounce-finish` + ` style={{ animationDelay: '${delay}s' }}`;
+      // ב-React נשים את זה ישירות כ-style
+    }
+
+    if (isBonusCard) return "animate-bonus";
+    if (isBonusSecondClick) return "animate-color-pulse";
+    if (card.type === "task" && card.revealed) return "animate-task";
+    if (card.type === "lose" && card.revealed) return "animate-lose";
+
+    // קלפים צבועים בלבד
+    if (card.color !== "") return "animate-color-pulse";
+
+    return "";
+  };
+
+
+
+
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-bold text-center mb-6">משחק רמת שלמה</h1>
@@ -172,31 +200,34 @@ function App() {
           {currentTeam.toUpperCase()}
         </span>
       </p>
-
       {/* גריד קלפים */}
       <div className="grid grid-cols-6 gap-4">
         {cards.map(card => {
           const isBonusCard = bonusCardId === card.id;
           const isBonusSecondClick = bonusActive && card.revealed && card.color !== "";
+          const gameFinished = cards.every(c => c.revealed || c.type === "lose");
 
-          let cardAnim = "";
-          if (isBonusCard) cardAnim = "animate-pulse animate-bounce rotate-3 border-yellow-400";
-          else if (card.type === "task" && card.revealed) cardAnim = "animate-pulse scale-105";
-          else if (card.type === "lose" && card.revealed) cardAnim = "animate-shake";
+          // delay אקראי רק בסוף המשחק
+          const finishDelay = gameFinished ? `${(Math.random() * 0.5).toFixed(2)}s` : undefined;
 
           return (
             <div
               key={card.id}
               onClick={() => handleCardClick(card)}
-              className={`h-36 flex items-center justify-center border-2 rounded-lg cursor-pointer shadow-lg transition-transform duration-200 transform hover:scale-105 hover:shadow-xl ${colorClasses[card.color]} ${cardAnim}`}
+              className={`h-36 flex items-center justify-center border-2 rounded-lg cursor-pointer shadow-lg 
+        hover:scale-110 hover:shadow-xl 
+        ${colorClasses[card.color]} 
+        ${getCardAnimation(card, isBonusCard, isBonusSecondClick, gameFinished)}
+      `}
+              style={finishDelay ? { animationDelay: finishDelay } : undefined}
             >
-              {/* קלף הפסד רגיל */}
-              {card.revealed && card.type === "lose" && !isBonusSecondClick && (
+              {card.revealed && card.type === "lose" && !(isBonusSecondClick) && (
                 <span className="font-bold text-white text-lg">קלף הפסד</span>
               )}
             </div>
           );
         })}
+
       </div>
 
       {/* ניקוד */}
