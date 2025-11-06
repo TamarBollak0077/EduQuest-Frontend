@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 
 type CardType = "task" | "extra" | "lose";
 type TeamColor = "pink" | "orange" | "purple" | "";
@@ -140,14 +150,20 @@ function App() {
   const getWinner = () => {
     const counts = teams.map(t => ({ team: t, score: countCards(t) }));
     counts.sort((a, b) => b.score - a.score);
-    return counts[0].score > 0 ? counts[0].team : "";
+    const maxScore = counts[0].score;
+    const winners = counts.filter(c => c.score === maxScore && maxScore > 0).map(c => c.team);
+
+    if (winners.length > 1) {
+      return `תיקו בין הקבוצות: ${winners.map(w => w.toUpperCase()).join(", ")}`;
+    }
+    return winners.length === 1 ? winners[0].toUpperCase() : "";
   };
 
   useEffect(() => {
     const allClicked = cards.every(c => c.revealed);
     if (allClicked && cards.length > 0) {
       playSound("finishGame");
-      setModalMessage(`המשחק הסתיים! מנצחת הקבוצה: ${getWinner().toUpperCase()}`);
+      setModalMessage(`המשחק הסתיים! המנצחים הם: ${getWinner().toUpperCase()}`);
       setCurrentTeam("");
       setBonusActive(false);
       setBonusCardId(null);
@@ -183,7 +199,7 @@ function App() {
 
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="relative p-6 min-h-screen overflow-hidden bg-gradient-to-br from-pink-200 via-orange-100 to-purple-200 animate-gradient-flow">
       <h1 className="text-4xl font-bold text-center mb-6">משחק רמת שלמה</h1>
 
       {/* קוביית צבעים */}
@@ -233,17 +249,48 @@ function App() {
 
       </div>
 
-      {/* ניקוד */}
-      <div className="mt-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">ניקוד</h2>
-        <p className="mb-1 text-pink-600">ורוד: {countCards("pink")}</p>
-        <p className="mb-1 text-orange-600">כתום: {countCards("orange")}</p>
-        <p className="mb-1 text-purple-600">סגול: {countCards("purple")}</p>
+      {/* ניקוד כגרף דינמי */}
+      <div className="mt-10 flex flex-col items-center">
+        <h2 className="text-2xl font-bold mb-4">🏆 ניקוד בזמן אמת</h2>
+
+        <div className="w-full max-w-md bg-white/60 backdrop-blur-md rounded-2xl p-4 shadow-xl">
+          <div style={{ width: "100%", height: 220 }}>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart
+                data={[
+                  { name: "ורוד", score: countCards("pink"), color: "#ec4899" },
+                  { name: "כתום", score: countCards("orange"), color: "#f97316" },
+                  { name: "סגול", score: countCards("purple"), color: "#a855f7" },
+                ]}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
+                <XAxis dataKey="name" tick={{ fill: "#444", fontSize: 14 }} />
+                <YAxis tick={{ fill: "#444" }} />
+                <Tooltip />
+                <Bar
+                  dataKey="score"
+                  radius={[10, 10, 0, 0]}
+                  isAnimationActive={true}
+                  animationDuration={800}
+                >
+                  {[
+                    { name: "ורוד", color: "#ec4899" },
+                    { name: "כתום", color: "#f97316" },
+                    { name: "סגול", color: "#a855f7" },
+                  ].map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
+
 
       {/* Modal */}
       {modalMessage && <Modal message={modalMessage} onClose={() => setModalMessage("")} />}
-    </div>
+    </div >
   );
 }
 
